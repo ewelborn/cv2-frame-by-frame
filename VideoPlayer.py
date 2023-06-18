@@ -1,6 +1,7 @@
 import sys
 import cv2
 import copy
+import datetime
 
 if len(sys.argv) < 2:
     print("Expected video file")
@@ -55,19 +56,23 @@ while True:
     if cv2.getWindowProperty(windowTitle, cv2.WND_PROP_VISIBLE) < 1:
         break
 
+    # Multiply the number of frames we're traveling by 10
+    # if the user is holding shift
+    multiplier = 10 if key >= 65 and key <= 90 else 1
+
     if key == ord("d") or key == ord("D"):
         # Go forwards
-        currentFrameIndex = min(currentFrameIndex + 1, len(frames) - 1)
+        currentFrameIndex = min(currentFrameIndex + 1 * multiplier, len(frames) - 1)
     elif key == ord("a") or key == ord("A"):
         # Go backwards
-        currentFrameIndex = max(currentFrameIndex - 1, 0)
+        currentFrameIndex = max(currentFrameIndex - 1 * multiplier, 0)
 
     elif key == ord("e") or key == ord("E"):
         # Go forwards by 1 second
-        currentFrameIndex = min(currentFrameIndex + int(fps), len(frames) - 1)
+        currentFrameIndex = min(currentFrameIndex + int(fps) * multiplier, len(frames) - 1)
     elif key == ord("q") or key == ord("Q"):
         # Go backwards by 1 second
-        currentFrameIndex = max(currentFrameIndex - int(fps), 0)
+        currentFrameIndex = max(currentFrameIndex - int(fps) * multiplier, 0)
 
     elif key == ord("z") or key == ord("Z"):
         # Jump to beginning
@@ -75,6 +80,15 @@ while True:
     elif key == ord("c") or key == ord("C"):
         # Jump to end
         currentFrameIndex = len(frames) - 1
+
+    elif key == ord("g") or key == ord("G"):
+        i = int(input("> "))
+        currentFrameIndex = min(max(i, 0), len(frames) - 1)
+
+    elif key == ord("p") or key == ord("P"):
+        pass
+        #cv2.imwrite(str(datetime.datetime.now()) + ".jpg", frames[currentFrameIndex])
+        #print("Screenshot saved")
 
     elif key == 27:
         # Quit
