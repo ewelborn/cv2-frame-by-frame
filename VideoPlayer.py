@@ -45,6 +45,13 @@ currentFrameIndex = 0
 
 cv2.namedWindow(windowTitle, cv2.WINDOW_NORMAL)
 
+def onMouse(event, x, y, flags, param):
+    if event == cv2.EVENT_LBUTTONDOWN:
+        #_, __, windowWidth, windowHeight = cv2.getWindowImageRect(windowTitle)
+        print(f"Mouse position: window({x}, {y})")#, video({(width / windowWidth) * x}, {(height / windowHeight) * y})")
+
+cv2.setMouseCallback(windowTitle, onMouse)
+
 while True:
     #_, __, windowWidth, windowHeight = cv2.getWindowImageRect(windowTitle)
     print(f"Frame: {currentFrameIndex}")
@@ -86,9 +93,15 @@ while True:
         currentFrameIndex = min(max(i, 0), len(frames) - 1)
 
     elif key == ord("p") or key == ord("P"):
-        pass
-        #cv2.imwrite(str(datetime.datetime.now()) + ".jpg", frames[currentFrameIndex])
-        #print("Screenshot saved")
+        #path = str(datetime.datetime.now()) + ".jpg"
+        path = f"{videoName}-{currentFrameIndex:04d}.jpg"
+        #print(path)
+        result = cv2.imwrite(path, frames[currentFrameIndex])
+
+        if result:
+            print(f"Screenshot saved at {path}")
+        else:
+            print("Failed to save screenshot")
 
     elif key == 27:
         # Quit
